@@ -15,8 +15,8 @@ echo "=================================================="
 echo ""
 
 # 1. Package Installation on Fedora
-if command -v dnf &>/dev/null; then
-    echo "--> Checking system dependencies via DNF..."
+if ! command -v quickshell &>/dev/null && command -v dnf &>/dev/null; then
+    echo "--> Installing missing system dependencies via DNF..."
     sudo dnf install -y \
         hyprland \
         quickshell \
@@ -40,6 +40,8 @@ if command -v dnf &>/dev/null; then
         python3-pillow \
         python3-opencv \
         python3-numpy 2>/dev/null || true
+else
+    echo "--> Core system packages already installed."
 fi
 
 # 2. Python Material You Color Generator
