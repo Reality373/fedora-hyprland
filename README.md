@@ -20,6 +20,8 @@ A keyboard-first, aesthetically pleasing **Hyprland** desktop environment tailor
 - **GNOME Coexistence:** Completely isolated so it will **never damage or interfere with your GNOME desktop environment**.
 - **Modern Hyprland Syntax:** Fully updated for Hyprland 0.53+ (unified `windowrule` engine, explicit booleans, zero legacy syntax errors).
 
+> 💡 **Looking for the full manual?** See [**GUIDE.md**](GUIDE.md) for in-depth installation steps, complete 75% keyboard navigation, modal submaps, theming tips, and troubleshooting!
+
 ---
 
 ## ⚡ Quick Installation
@@ -47,20 +49,21 @@ Press **<kbd>Super</kbd> + <kbd>/</kbd>** anytime inside Hyprland to bring up th
 ### 💠 Shell Overlays
 | Shortcut | Action |
 | :--- | :--- |
-| <kbd>Super</kbd> *(tap)* or <kbd>Super</kbd> + <kbd>D</kbd> | **App Launcher & Command Search** *(Type `<` for keybinds, `/dark`, `/light`)* |
+| <kbd>Super</kbd> + <kbd>Space</kbd> *(or <kbd>Super</kbd> / <kbd>Super</kbd>+<kbd>D</kbd>)* | **App Launcher & Command Search** *(Type `<` for keybinds, `/dark`, `/light`)* |
 | <kbd>Super</kbd> + <kbd>Tab</kbd> | **Window & Workspace Overview** |
 | <kbd>Super</kbd> + <kbd>Escape</kbd> *(or <kbd>Super</kbd> + <kbd>,</kbd>)* | **Material 3 Settings Panel** |
 | <kbd>Super</kbd> + <kbd>N</kbd> | **Notification Center & Quick Toggles** |
 | <kbd>Super</kbd> + <kbd>A</kbd> | **Left Sidebar** *(AI Assistant, Notes, Tools)* |
-| <kbd>Super</kbd> + <kbd>W</kbd> | **Wallpaper Selector** |
+| <kbd>Super</kbd> + <kbd>W</kbd> | **Wallpaper Selector** *(<kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd> for random)* |
 | <kbd>Super</kbd> + <kbd>X</kbd> | **Session & Power Screen** *(Lock, Reboot, Shutdown)* |
 
-### 🪟 Window Management
+### 🪟 Window Management & Apps
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>Super</kbd> + <kbd>Q</kbd> | Launch Terminal (`ghostty`) |
+| <kbd>Super</kbd> + <kbd>B</kbd> | Launch Web Browser (`firefox`) |
 | <kbd>Super</kbd> + <kbd>E</kbd> | Open File Manager (`nautilus`) |
-| <kbd>Super</kbd> + <kbd>C</kbd> | Close Focused Window |
+| <kbd>Super</kbd> + <kbd>C</kbd> *(or <kbd>Alt</kbd>+<kbd>F4</kbd>)* | Close Focused Window |
 | <kbd>Super</kbd> + <kbd>V</kbd> | Toggle Floating / Tiled Window |
 | <kbd>Super</kbd> + <kbd>F</kbd> | Toggle Fullscreen |
 | <kbd>Alt</kbd> + <kbd>Tab</kbd> | Cycle Windows in Workspace |
@@ -72,18 +75,24 @@ Press **<kbd>Super</kbd> + <kbd>/</kbd>** anytime inside Hyprland to bring up th
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> | Swap window Left / Down / Up / Right |
 | <kbd>Super</kbd> + <kbd>1</kbd> ... <kbd>0</kbd> | Switch to Workspace 1–10 |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>1</kbd> ... <kbd>0</kbd> | Move active window to Workspace 1–10 |
+| <kbd>Super</kbd> + <kbd>Backspace</kbd> | Switch to Previous Workspace |
 | <kbd>Super</kbd> + <kbd>`</kbd> | Toggle Scratchpad Workspace |
 
 ### 📐 Modal Submaps
 - **Resize Mode:** Press <kbd>Super</kbd> + <kbd>R</kbd>, then resize with <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd>. Exit with <kbd>Escape</kbd>.
 - **Move Mode:** Press <kbd>Super</kbd> + <kbd>G</kbd>, then move with <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd>. Exit with <kbd>Escape</kbd>.
 
-### 📸 Screenshots & System
+### 📸 Screenshots & System (75% Optimized)
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>Super</kbd> + <kbd>S</kbd> | Interactive Region Screenshot *(Clipboard)* |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Fullscreen Screenshot *(Clipboard)* |
 | <kbd>Super</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Fullscreen Screenshot *(Saved to `~/Pictures/Screenshots`)* |
+| <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>S</kbd> | Region Screenshot with Annotation (`swappy`) |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Clipboard History Picker (`cliphist`) |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> | Wi-Fi Networks Menu |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Bluetooth Devices Menu |
+| <kbd>Super</kbd> + <kbd>P</kbd> | Power Profile Selector (Performance/Balanced/Saver) |
 | <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>L</kbd> | Lock Screen (`hyprlock`) |
 
 ---

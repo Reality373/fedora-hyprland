@@ -10,17 +10,26 @@ format_desc() {
   local args="$2"
   case "$disp $args" in
     *"quickshell:searchToggle"*) echo "App Launcher & Command Search" ;;
-    *"quickshell:overviewToggle"*) echo "Workspace & Window Overview" ;;
+    *"quickshell:overviewToggle"* | *"quickshell:overviewWorkspacesToggle"*) echo "Workspace & Window Overview" ;;
     *"quickshell:settingsToggle"*) echo "Settings Panel (end4-pC)" ;;
     *"quickshell:sidebarRightToggle"*) echo "Notification Center & Quick Toggles" ;;
     *"quickshell:sidebarLeftToggle"*) echo "AI Assistant & Left Sidebar" ;;
     *"quickshell:sessionToggle"*) echo "Session & Power Menu (Lock/Exit/Shutdown)" ;;
     *"quickshell:wallpaperSelectorToggle"*) echo "Wallpaper Selector" ;;
+    *"quickshell:wallpaperSelectorRandom"*) echo "Select Random Wallpaper" ;;
     *"ghostty"*) echo "Launch Terminal (Ghostty)" ;;
+    *"firefox"* | *"browser"*) echo "Launch Web Browser (Firefox)" ;;
     *"nautilus"*) echo "Launch File Manager (Nautilus)" ;;
     *"rofi -show drun"*) echo "Alternative App Launcher (Rofi)" ;;
     *"rofi -show window"*) echo "Switch Window by Name" ;;
     *"hypr-cheatsheet"*) echo "Show Keybinding Cheatsheet" ;;
+    *"hypr-wifi"*) echo "Wi-Fi Networks Menu" ;;
+    *"hypr-bluetooth"*) echo "Bluetooth Devices Menu" ;;
+    *"hypr-power"*) echo "Power Profile Selector" ;;
+    *"hypr-clipboard"*) echo "Clipboard History Picker" ;;
+    *"wdisplays"*) echo "Display & Monitor Settings" ;;
+    *"hyprpicker"*) echo "Color Picker (Hex to Clipboard)" ;;
+    *"pavucontrol"*) echo "Volume Mixer (GUI)" ;;
     *"hyprlock"*) echo "Lock Screen" ;;
     *"killactive"*) echo "Close Active Window" ;;
     *"togglefloating"*) echo "Toggle Floating / Tiled Window" ;;
