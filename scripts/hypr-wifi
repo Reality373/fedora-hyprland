@@ -22,8 +22,8 @@ MENU="$LIST
 󰑐  Rescan
   Open full settings (GUI)"
 
-CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "wifi" \
-          -theme-str 'window { width: 30%; } listview { lines: 12; }')" || exit 0
+CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "󰖩 Wi-Fi" \
+          -theme-str 'window { width: 36%; } listview { lines: 10; }')" || exit 0
 [ -z "$CHOICE" ] && exit 0
 
 case "$CHOICE" in
@@ -47,8 +47,8 @@ if printf '%s' "$CHOICE" | grep -q "open$"; then
   exit 0
 fi
 
-PASS="$(rofi -dmenu -password -p "password for $SSID" \
-        -theme-str 'window { width: 25%; } listview { lines: 0; }')" || exit 0
+PASS="$(rofi -dmenu -password -p "🔑 Password for $SSID" \
+        -theme-str 'window { width: 30%; } listview { lines: 0; }')" || exit 0
 [ -z "$PASS" ] && exit 0
 
 if nmcli device wifi connect "$SSID" password "$PASS" >/dev/null 2>&1; then

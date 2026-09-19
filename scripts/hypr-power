@@ -23,20 +23,20 @@ PROFILES="$(busctl --system get-property "$BUS_NAME" "$OBJ_PATH" "$IFACE" Profil
 MENU="$(printf '%s\n' "$PROFILES" | while read -r p; do
       [ -z "$p" ] && continue
       case "$p" in
-        performance) icon="󰓅" ;;
-        balanced)    icon="󰾅" ;;
-        power-saver) icon="󰾆" ;;
-        *)           icon="󰐮" ;;
+        performance) icon="󰓅" name="Performance" ;;
+        balanced)    icon="󰾅" name="Balanced" ;;
+        power-saver) icon="󰾆" name="Power Saver" ;;
+        *)           icon="󰐮" name="$p" ;;
       esac
-      if [ "$p" = "$CURRENT" ]; then printf '%s  %s  ●\n' "$icon" "$p"
-      else printf '%s  %s\n' "$icon" "$p"; fi
+      if [ "$p" = "$CURRENT" ]; then printf '%s  %-15s  ● (Active)\n' "$icon" "$name"
+      else printf '%s  %-15s\n' "$icon" "$name"; fi
     done)"
 
-CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "power profile" \
-          -theme-str 'window { width: 25%; } listview { lines: 4; }')" || exit 0
+CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "⚡ Power Profile" \
+          -theme-str 'window { width: 30%; } listview { lines: 3; }')" || exit 0
 [ -z "$CHOICE" ] && exit 0
 
-PROFILE="$(printf '%s' "$CHOICE" | awk '{print $2}')"
+PROFILE="$(printf '%s' "$CHOICE" | awk '{print $2}' | tr '[:upper:]' '[:lower:]' | sed 's/power/power-saver/')"
 [ -z "$PROFILE" ] && exit 0
 
 busctl --system set-property "$BUS_NAME" "$OBJ_PATH" "$IFACE" ActiveProfile s "$PROFILE" \

@@ -92,4 +92,12 @@ else
   apply_term &
 fi
 
+apply_rofi() {
+  if command -v hypr-material-rofi &>/dev/null; then
+    hypr-material-rofi &
+  fi
+}
+
+apply_rofi &
+
 # apply_qt & # Qt theming is already handled by kde-material-colors

@@ -76,6 +76,7 @@ ln -sfn "$DOTS_DIR/config/quickshell/end4-pC" "$HOME/.config/quickshell/ii"
 mkdir -p "$HOME/.config/rofi"
 ln -sfn "$DOTS_DIR/config/rofi/config.rasi" "$HOME/.config/rofi/config.rasi"
 ln -sfn "$DOTS_DIR/config/rofi/theme.rasi" "$HOME/.config/rofi/theme.rasi"
+ln -sfn "$DOTS_DIR/config/rofi/colors.rasi" "$HOME/.config/rofi/colors.rasi"
 
 # Helper scripts
 for script in "$DOTS_DIR"/scripts/*; do
@@ -90,6 +91,7 @@ echo "--> Generating initial Material 3 color palette..."
 mkdir -p "$HOME/.local/state/quickshell/user/generated"
 matugen image "$DOTS_DIR/config/quickshell/end4-pC/assets/images/default_wallpaper.png" \
     --source-color-index 0 --mode dark --json hex > "$HOME/.local/state/quickshell/user/generated/colors.json" 2>/dev/null || true
+"$DOTS_DIR/scripts/hypr-material-rofi" 2>/dev/null || true
 
 # 6. Verify Hyprland Configuration
 echo "--> Validating Hyprland config..."

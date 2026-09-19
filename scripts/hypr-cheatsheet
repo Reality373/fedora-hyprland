@@ -101,20 +101,26 @@ parse() {
       combo="${combo//\$mainMod/SUPER}"
     fi
     
+    ACCENT="$(grep -E '^\s*primary:' "$HOME/.config/rofi/colors.rasi" 2>/dev/null | awk '{print $2}' | tr -d ';' || echo "#e4b7f3")"
+    [ -z "$ACCENT" ] && ACCENT="#e4b7f3"
+    
     desc="$(format_desc "$disp" "$args")"
-    printf '<b>%-30s</b>  <span color="#89b4fa">│</span>  %s\n' "$combo" "$desc"
+    printf '<b>%-30s</b>  <span color="%s">│</span>  %s\n' "$combo" "$ACCENT" "$desc"
   done
 }
 
+ACCENT="$(grep -E '^\s*primary:' "$HOME/.config/rofi/colors.rasi" 2>/dev/null | awk '{print $2}' | tr -d ';' || echo "#e4b7f3")"
+[ -z "$ACCENT" ] && ACCENT="#e4b7f3"
+
 {
-  echo "<b>─── SHELL &amp; APPLICATION SHORTCUTS ───</b>"
+  echo "<span color=\"$ACCENT\" weight=\"bold\">─── SHELL &amp; APPLICATION SHORTCUTS ───</span>"
   parse "$BINDS"
   if [ -e "$SUBMAPS" ]; then
     echo ""
-    echo "<b>─── MODAL NAVIGATION (SUBMAPS) ───</b>"
+    echo "<span color=\"$ACCENT\" weight=\"bold\">─── MODAL NAVIGATION (SUBMAPS) ───</span>"
     parse "$SUBMAPS"
   fi
 } | rofi -dmenu -i -markup-rows -no-custom \
          -p "⌨ Keybinds" \
-         -theme-str 'window { width: 55%; border-radius: 12px; } listview { lines: 18; }' \
+         -theme-str 'window { width: 58%; } listview { lines: 16; }' \
   >/dev/null 2>&1 || true

@@ -33,8 +33,8 @@ MENU="$DEVICES
 󰑐  Rescan
   Open full settings (GUI)"
 
-CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "bluetooth" \
-          -theme-str 'window { width: 35%; } listview { lines: 12; }')" || exit 0
+CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "󰂯 Bluetooth" \
+          -theme-str 'window { width: 38%; } listview { lines: 10; }')" || exit 0
 [ -z "$CHOICE" ] && exit 0
 
 case "$CHOICE" in
