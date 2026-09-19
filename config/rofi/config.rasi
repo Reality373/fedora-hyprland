@@ -8,11 +8,15 @@ configuration {
     display-drun: "apps";
     display-run: "run";
     display-window: "windows";
+    /* Unbind conflicting defaults first */
+    kb-remove-to-eol: "";
+    kb-element-next: "";
+    kb-element-prev: "";
+
+    /* Vim-friendly navigation */
     kb-row-up: "Up,Control+k";
     kb-row-down: "Down,Control+j";
     kb-accept-entry: "Return,KP_Enter";
-    kb-element-next: "";
-    kb-element-prev: "";
     kb-mode-next: "Tab";
     kb-mode-previous: "ISO_Left_Tab";
 }
