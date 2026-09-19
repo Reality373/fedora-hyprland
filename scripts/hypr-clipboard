@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Clipboard history. Selectable by keyboard (type to filter, Enter) or mouse.
+set -euo pipefail
+
+SELECTION="$(cliphist list | rofi -dmenu -i -p "clipboard" \
+             -theme-str 'window { width: 50%; } listview { lines: 15; }')" || exit 0
+[ -z "$SELECTION" ] && exit 0
+printf '%s' "$SELECTION" | cliphist decode | wl-copy

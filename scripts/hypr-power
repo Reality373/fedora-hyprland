@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Power profile switcher, driven via the net.hadess.PowerProfiles D-Bus API
+# (Fedora 43 ships tuned-ppd, which implements this interface but has no CLI;
+# powerprofilesctl is not installed and will not be, since installing
+# power-profiles-daemon would require removing tuned-ppd).
+# The GUI equivalent is clicking the waybar power-profiles module, or
+# GNOME's own power panel.
+set -euo pipefail
+
+BUS_NAME="net.hadess.PowerProfiles"
+OBJ_PATH="/net/hadess/PowerProfiles"
+IFACE="net.hadess.PowerProfiles"
+
+notify() { command -v notify-send >/dev/null && notify-send "Power profile" "$1" || true; }
+
+CURRENT="$(busctl --system get-property "$BUS_NAME" "$OBJ_PATH" "$IFACE" ActiveProfile 2>/dev/null \
+           | sed -E 's/^s //; s/^"//; s/"$//')"
+[ -z "$CURRENT" ] && CURRENT="balanced"
+
+PROFILES="$(busctl --system get-property "$BUS_NAME" "$OBJ_PATH" "$IFACE" Profiles 2>/dev/null \
+            | grep -oP '"Profile" s "\K[^"]+')"
+
+MENU="$(printf '%s\n' "$PROFILES" | while read -r p; do
+      [ -z "$p" ] && continue
+      case "$p" in
+        performance) icon="󰓅" ;;
+        balanced)    icon="󰾅" ;;
+        power-saver) icon="󰾆" ;;
+        *)           icon="󰐮" ;;
+      esac
+      if [ "$p" = "$CURRENT" ]; then printf '%s  %s  ●\n' "$icon" "$p"
+      else printf '%s  %s\n' "$icon" "$p"; fi
+    done)"
+
+CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "power profile" \
+          -theme-str 'window { width: 25%; } listview { lines: 4; }')" || exit 0
+[ -z "$CHOICE" ] && exit 0
+
+PROFILE="$(printf '%s' "$CHOICE" | awk '{print $2}')"
+[ -z "$PROFILE" ] && exit 0
+
+busctl --system set-property "$BUS_NAME" "$OBJ_PATH" "$IFACE" ActiveProfile s "$PROFILE" \
+  && notify "Switched to $PROFILE" || notify "Failed to switch to $PROFILE (polkit auth required)"

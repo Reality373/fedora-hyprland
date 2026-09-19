@@ -1,0 +1,19 @@
+configuration {
+    modes: "drun,run,window";
+    font: "JetBrainsMono Nerd Font 11";
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-display-format: "{name}";
+    window-format: "{w}  {c}  {t}";
+    display-drun: "apps";
+    display-run: "run";
+    display-window: "windows";
+    kb-row-up: "Up,Control+k";
+    kb-row-down: "Down,Control+j";
+    kb-accept-entry: "Return,KP_Enter";
+    kb-element-next: "";
+    kb-element-prev: "";
+    kb-mode-next: "Tab";
+    kb-mode-previous: "ISO_Left_Tab";
+}
+@theme "~/.config/rofi/theme.rasi"

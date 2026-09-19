@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Render every keybinding into a clean, searchable cheatsheet overlay.
+set -euo pipefail
+
+BINDS="$HOME/.config/hypr/conf.d/binds.conf"
+SUBMAPS="$HOME/.config/hypr/conf.d/submaps.conf"
+
+format_desc() {
+  local disp="$1"
+  local args="$2"
+  case "$disp $args" in
+    *"quickshell:searchToggle"*) echo "App Launcher & Command Search" ;;
+    *"quickshell:overviewToggle"*) echo "Workspace & Window Overview" ;;
+    *"quickshell:settingsToggle"*) echo "Settings Panel (end4-pC)" ;;
+    *"quickshell:sidebarRightToggle"*) echo "Notification Center & Quick Toggles" ;;
+    *"quickshell:sidebarLeftToggle"*) echo "AI Assistant & Left Sidebar" ;;
+    *"quickshell:sessionToggle"*) echo "Session & Power Menu (Lock/Exit/Shutdown)" ;;
+    *"quickshell:wallpaperSelectorToggle"*) echo "Wallpaper Selector" ;;
+    *"ghostty"*) echo "Launch Terminal (Ghostty)" ;;
+    *"nautilus"*) echo "Launch File Manager (Nautilus)" ;;
+    *"rofi -show drun"*) echo "Alternative App Launcher (Rofi)" ;;
+    *"rofi -show window"*) echo "Switch Window by Name" ;;
+    *"hypr-cheatsheet"*) echo "Show Keybinding Cheatsheet" ;;
+    *"hyprlock"*) echo "Lock Screen" ;;
+    *"killactive"*) echo "Close Active Window" ;;
+    *"togglefloating"*) echo "Toggle Floating / Tiled Window" ;;
+    *"fullscreen 0"*) echo "Toggle Fullscreen Mode" ;;
+    *"fullscreen 1"*) echo "Toggle Fake Fullscreen" ;;
+    *"exit"*) echo "Exit Hyprland (Logout)" ;;
+    *"movefocus l"*) echo "Focus Left Window" ;;
+    *"movefocus r"*) echo "Focus Right Window" ;;
+    *"movefocus u"*) echo "Focus Upper Window" ;;
+    *"movefocus d"*) echo "Focus Lower Window" ;;
+    *"swapwindow l"*) echo "Swap Window to the Left" ;;
+    *"swapwindow r"*) echo "Swap Window to the Right" ;;
+    *"swapwindow u"*) echo "Swap Window Upwards" ;;
+    *"swapwindow d"*) echo "Swap Window Downwards" ;;
+    *"submap resize"*) echo "Enter Window Resize Mode" ;;
+    *"submap move"*) echo "Enter Window Move Mode" ;;
+    *"special:scratch"*) echo "Toggle / Send to Scratchpad" ;;
+    *"movetoworkspace"*) echo "Move Window to Workspace $args" ;;
+    *"workspace"*) echo "Switch to Workspace $args" ;;
+    *"grim"*"slurp"*) echo "Interactive Region Screenshot (Clipboard)" ;;
+    *"grim"*) echo "Fullscreen Screenshot" ;;
+    *"pamixer -i"*) echo "Volume Up 5%" ;;
+    *"pamixer -d"*) echo "Volume Down 5%" ;;
+    *"pamixer -t"*) echo "Toggle Audio Mute" ;;
+    *"brightnessctl set 5%+"*) echo "Screen Brightness Up 5%" ;;
+    *"brightnessctl set 5%-"*) echo "Screen Brightness Down 5%" ;;
+    *"playerctl play-pause"*) echo "Media: Play / Pause" ;;
+    *"playerctl next"*) echo "Media: Next Track" ;;
+    *"playerctl previous"*) echo "Media: Previous Track" ;;
+    *) echo "$disp $args" ;;
+  esac
+}
+
+parse() {
+  grep -hE '^\s*bind[a-z]*\s*=' "$@" 2>/dev/null | while IFS= read -r line; do
+    body="${line#*=}"
+    mods="$(echo "$body"  | awk -F',' '{print $1}' | xargs)"
+    key="$(echo "$body"   | awk -F',' '{print $2}' | xargs)"
+    disp="$(echo "$body"  | awk -F',' '{print $3}' | xargs)"
+    args="$(echo "$body"  | cut -d',' -f4- | xargs)"
+    [ -z "$key" ] && continue
+    
+    # Clean up modifiers for readability
+    combo="$([ -n "$mods" ] && echo "$mods + $key" || echo "$key")"
+    combo="${combo//\$mainMod/SUPER}"
+    
+    desc="$(format_desc "$disp" "$args")"
+    printf '<b>%-30s</b>  <span color="#89b4fa">│</span>  %s\n' "$combo" "$desc"
+  done
+}
+
+{
+  echo "<b>─── SHELL &amp; APPLICATION SHORTCUTS ───</b>"
+  parse "$BINDS"
+  if [ -e "$SUBMAPS" ]; then
+    echo ""
+    echo "<b>─── MODAL NAVIGATION (SUBMAPS) ───</b>"
+    parse "$SUBMAPS"
+  fi
+} | rofi -dmenu -i -markup-rows -no-custom \
+         -p "⌨ Keybinds" \
+         -theme-str 'window { width: 55%; border-radius: 12px; } listview { lines: 18; }' \
+  >/dev/null 2>&1 || true

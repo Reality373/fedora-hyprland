@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Keyboard-driven Wi-Fi picker. The GUI equivalent is nm-connection-editor,
+# reachable by clicking the waybar network module or via the nm-applet tray.
+set -euo pipefail
+
+notify() { command -v notify-send >/dev/null && notify-send "Wi-Fi" "$1" || true; }
+
+WIFI_DEV="$(nmcli -t -f DEVICE,TYPE device | awk -F: '$2=="wifi"{print $1; exit}')"
+
+nmcli device wifi rescan >/dev/null 2>&1 || true
+
+LIST="$(nmcli -t -f IN-USE,SSID,SECURITY,SIGNAL device wifi list \
+        | awk -F: '$2 != "" {
+            mark = ($1 == "*") ? "󰸞 " : "  ";
+            sec  = ($3 == "") ? "open" : $3;
+            printf "%s%s  [%s%%] %s\n", mark, $2, $4, sec
+          }' | sort -u)"
+
+MENU="$LIST
+──────────
+󰖪  Disconnect
+󰑐  Rescan
+  Open full settings (GUI)"
+
+CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "wifi" \
+          -theme-str 'window { width: 30%; } listview { lines: 12; }')" || exit 0
+[ -z "$CHOICE" ] && exit 0
+
+case "$CHOICE" in
+  *"Disconnect"*) nmcli device disconnect "$WIFI_DEV" && notify "Disconnected"; exit 0 ;;
+  *"Rescan"*)     exec "$0" ;;
+  *"full settings"*) exec nm-connection-editor ;;
+  "──────────")   exit 0 ;;
+esac
+
+SSID="$(printf '%s' "$CHOICE" | sed -E 's/^(󰸞|  ) *//; s/  \[[0-9]+%\].*$//')"
+[ -z "$SSID" ] && exit 0
+
+# Try a saved connection first; only prompt for a password if that fails.
+if nmcli connection show "$SSID" >/dev/null 2>&1; then
+  nmcli connection up "$SSID" >/dev/null 2>&1 && { notify "Connected to $SSID"; exit 0; }
+fi
+
+if printf '%s' "$CHOICE" | grep -q "open$"; then
+  nmcli device wifi connect "$SSID" >/dev/null 2>&1 \
+    && notify "Connected to $SSID" || notify "Failed to connect to $SSID"
+  exit 0
+fi
+
+PASS="$(rofi -dmenu -password -p "password for $SSID" \
+        -theme-str 'window { width: 25%; } listview { lines: 0; }')" || exit 0
+[ -z "$PASS" ] && exit 0
+
+if nmcli device wifi connect "$SSID" password "$PASS" >/dev/null 2>&1; then
+  notify "Connected to $SSID"
+else
+  notify "Failed to connect to $SSID"
+fi

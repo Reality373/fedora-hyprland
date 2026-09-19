@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Keyboard-driven Bluetooth menu. The GUI equivalent is blueman-manager,
+# reachable by clicking the waybar bluetooth module or the blueman tray icon.
+set -euo pipefail
+
+notify() { command -v notify-send >/dev/null && notify-send "Bluetooth" "$1" || true; }
+
+POWERED="$(bluetoothctl show 2>/dev/null | awk '/Powered:/ {print $2}')"
+
+if [ "$POWERED" != "yes" ]; then
+  CHOICE="$(printf '  Turn Bluetooth on\n  Open full settings (GUI)' \
+            | rofi -dmenu -i -p "bluetooth (off)")" || exit 0
+  case "$CHOICE" in
+    *"Turn Bluetooth on"*) bluetoothctl power on >/dev/null; notify "Powered on"; exec "$0" ;;
+    *"full settings"*)     exec blueman-manager ;;
+    *) exit 0 ;;
+  esac
+fi
+
+bluetoothctl --timeout 5 scan on >/dev/null 2>&1 || true
+
+DEVICES="$(bluetoothctl devices 2>/dev/null | while read -r _ mac name; do
+    if bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes"; then
+      printf '󰂱  %s  [connected]  %s\n' "$name" "$mac"
+    else
+      printf '󰂯  %s  %s\n' "$name" "$mac"
+    fi
+  done)"
+
+MENU="$DEVICES
+──────────
+󰂲  Turn Bluetooth off
+󰑐  Rescan
+  Open full settings (GUI)"
+
+CHOICE="$(printf '%s' "$MENU" | rofi -dmenu -i -p "bluetooth" \
+          -theme-str 'window { width: 35%; } listview { lines: 12; }')" || exit 0
+[ -z "$CHOICE" ] && exit 0
+
+case "$CHOICE" in
+  *"Turn Bluetooth off"*) bluetoothctl power off >/dev/null; notify "Powered off"; exit 0 ;;
+  *"Rescan"*)             exec "$0" ;;
+  *"full settings"*)      exec blueman-manager ;;
+  "──────────")           exit 0 ;;
+esac
+
+MAC="$(printf '%s' "$CHOICE" | grep -oE '([0-9A-F]{2}:){5}[0-9A-F]{2}' | head -1)"
+[ -z "$MAC" ] && exit 0
+
+if printf '%s' "$CHOICE" | grep -q "\[connected\]"; then
+  bluetoothctl disconnect "$MAC" >/dev/null 2>&1 && notify "Disconnected"
+else
+  bluetoothctl pair "$MAC"  >/dev/null 2>&1 || true
+  bluetoothctl trust "$MAC" >/dev/null 2>&1 || true
+  if bluetoothctl connect "$MAC" >/dev/null 2>&1; then notify "Connected"; else notify "Failed to connect"; fi
+fi
